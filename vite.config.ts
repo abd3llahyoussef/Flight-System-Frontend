@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   // تحديد التارغت بناءً على البيئة
   const apiTarget = mode === 'production'
-    ? 'http://13.50.13.206:8080'
+    ? 'http://localhost:8080'
     : 'http://localhost:8080';
 
   return {
