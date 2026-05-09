@@ -1,9 +1,15 @@
 import { Link, NavLink } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { Globe, User, LogOut } from "lucide-react";
+import { Globe, User, LogOut, Menu } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/lib/features/auth/authSlice";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 interface NavbarProps {
   variant?: "transparent" | "solid";
@@ -25,14 +31,43 @@ export const Navbar = ({ variant = "transparent" }: NavbarProps) => {
   return (
     <header
       className={`${variant === "solid"
-          ? "bg-background/80 backdrop-blur border-b border-border relative"
-          : "absolute top-0 left-0 right-0 z-30"
+        ? "bg-background/80 backdrop-blur border-b border-border relative"
+        : "absolute top-0 left-0 right-0 z-30"
         }`}
     >
       <div className="container flex h-20 items-center justify-between">
         <Link to="/" className={onDark ? "text-primary-foreground" : "text-foreground"}>
           <Logo />
         </Link>
+
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant={onDark ? "soft" : "ghost"} size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <SheetTitle className="text-left mb-6">Menu</SheetTitle>
+              <nav className="flex flex-col gap-4 mt-8">
+                {links.map((l) => (
+                  <NavLink
+                    key={l.to}
+                    to={l.to}
+                    end={l.to === "/"}
+                    className={({ isActive }) =>
+                      `text-lg font-medium transition-colors hover:text-teal ${isActive ? "text-teal" : "text-muted-foreground"
+                      }`
+                    }
+                  >
+                    {l.label}
+                  </NavLink>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
         <nav
           className={`hidden md:flex items-center gap-8 text-sm font-medium ${onDark ? "text-primary-foreground/80" : "text-muted-foreground"
             }`}
@@ -59,8 +94,8 @@ export const Navbar = ({ variant = "transparent" }: NavbarProps) => {
               <span className={`text-sm font-medium ${onDark ? "text-primary-foreground" : "text-foreground"}`}>
                 {user.name}
               </span>
-              <Button 
-                variant={onDark ? "soft" : "outline"} 
+              <Button
+                variant={onDark ? "soft" : "outline"}
                 size="sm"
                 onClick={() => dispatch(logout())}
               >
